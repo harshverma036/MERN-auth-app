@@ -38,5 +38,10 @@ export const registerUser = asyncHandler(async (req, res) => {
 
   const registeredUser = await newUser.save();
 
-  res.status(201).json(registeredUser);
+  res.status(201).json({
+    _id: registeredUser._id,
+    name: registeredUser.name,
+    email: registeredUser.email,
+    token: generateToken(registeredUser._id),
+  });
 });

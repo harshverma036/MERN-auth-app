@@ -1,8 +1,37 @@
-import React from "react";
-import { Grid, Box, Button, TextField, Typography } from "@material-ui/core";
+import React, { useState, useEffect } from "react";
+import {
+  Grid,
+  Box,
+  Button,
+  TextField,
+  Typography,
+  CircularProgress,
+} from "@material-ui/core";
 import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { login } from "../actions/userActions";
 
-const LoginScreen = () => {
+const LoginScreen = ({ history }) => {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const dispatch = useDispatch();
+
+  const userLogin = useSelector((state) => state.userLogin);
+  const { loading, userInfo, error } = userLogin;
+
+  useEffect(() => {
+    if (userInfo) {
+      history.push("/");
+    } else {
+      history.push("/login");
+    }
+  }, [userInfo, history]);
+
+  const submitHandler = (e) => {
+    e.preventDefault();
+    dispatch(login({ email, password }));
+  };
   return (
     <Grid container justify="center">
       <Grid item lg={5} md={7} xs={12}>
@@ -16,7 +45,8 @@ const LoginScreen = () => {
             {"Auth App"}
           </Typography>
           <Typography>{"Enter your credientials to Login"}</Typography>
-          <Box component="form" mt={2}>
+          <Box component="form" mt={2} onSubmit={submitHandler}>
+            {error && <Typography color="error">{error}</Typography>}
             <TextField
               variant="outlined"
               label="Email"
@@ -24,6 +54,8 @@ const LoginScreen = () => {
               color="secondary"
               type="email"
               margin="normal"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               required
               fullWidth
             />
@@ -35,6 +67,8 @@ const LoginScreen = () => {
               color="secondary"
               type="password"
               margin="normal"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
               required
               fullWidth
             />
@@ -43,8 +77,11 @@ const LoginScreen = () => {
               variant="contained"
               color="secondary"
               fullWidth
+              type="submit"
               style={{ marginTop: 16, marginBottom: 10 }}
             >
+              {loading && <CircularProgress size={22} color="inherit" />}
+              &nbsp;&nbsp;
               {"Login"}
             </Button>
 
