@@ -1,12 +1,16 @@
 import React, { useEffect } from "react";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
 import { useSelector, useDispatch } from "react-redux";
-import { logout } from "../actions/userActions";
+import { logout, deleteMe } from "../actions/userActions";
 
 const Dashboard = ({ history }) => {
   const dispatch = useDispatch();
+
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+
+  const deleteUser = useSelector((state) => state.deleteUser);
+  const { loading, succes, error } = deleteUser;
 
   useEffect(() => {
     if (!userInfo || !userInfo.name) {
@@ -19,13 +23,19 @@ const Dashboard = ({ history }) => {
     dispatch(logout());
   };
 
+  const deleteHandler = () => {
+    history.push("/login");
+    dispatch(deleteMe());
+    dispatch(logout());
+  };
+
   return (
     <Box mt={5} display="flex" flexDirection="column">
       <Typography variant="h4" color="secondary" style={{ marginBottom: 20 }}>
         {userInfo && `Wecome to Auth App, ${userInfo.name}`}
       </Typography>
       <Typography style={{ marginBottom: 20 }}>
-        {"Thanku for registering with us."}
+        {"Thank you for registering with us."}
       </Typography>
       <Grid container>
         <Grid item md={4} xs={12}></Grid>
@@ -38,7 +48,7 @@ const Dashboard = ({ history }) => {
           >
             {"Logout"}
           </Button>
-          <Button variant="contained" color="secondary">
+          <Button variant="contained" color="secondary" onClick={deleteHandler}>
             {"Delete Account"}
           </Button>
         </Grid>

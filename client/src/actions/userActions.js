@@ -7,6 +7,9 @@ import {
   USER_REGISTER_REQUEST,
   USER_REGISTER_SUCCESS,
   USER_REGISTER_FAIL,
+  USER_DELETE_REQUEST,
+  USER_DELETE_SUCCESS,
+  USER_DELETE_FAIL,
 } from "../constants/userConstants";
 
 export const login = (user) => async (dispatch, getState) => {
@@ -56,4 +59,32 @@ export const register = (user) => async (dispatch) => {
 export const logout = () => async (dispatch) => {
   dispatch({ type: USER_LOGOUT_SUCCESS });
   localStorage.removeItem("userInfo");
+};
+
+export const deleteMe = () => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_DELETE_REQUEST });
+
+    const {
+      userLogin: { userInfo },
+    } = getState();
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+
+    await axios.delete("/api/users/delete", config);
+
+    dispatch({ type: USER_DELETE_SUCCESS });
+  } catch (error) {
+    dispatch({
+      type: USER_DELETE_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
 };
