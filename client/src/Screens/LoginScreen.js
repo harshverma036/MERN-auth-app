@@ -56,6 +56,7 @@ const LoginScreen = ({ history }) => {
               margin="normal"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
+              disabled={loading}
               required
               fullWidth
             />
@@ -69,6 +70,7 @@ const LoginScreen = ({ history }) => {
               margin="normal"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
+              disabled={loading}
               required
               fullWidth
             />
@@ -79,6 +81,7 @@ const LoginScreen = ({ history }) => {
               fullWidth
               type="submit"
               style={{ marginTop: 16, marginBottom: 10 }}
+              disabled={loading}
             >
               {loading && <CircularProgress size={22} color="inherit" />}
               &nbsp;&nbsp;

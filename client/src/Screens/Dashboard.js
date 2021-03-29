@@ -1,14 +1,29 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Box, Button, Grid, Typography } from "@material-ui/core";
+import { useSelector, useDispatch } from "react-redux";
+import { logout } from "../actions/userActions";
 
-const Dashboard = () => {
+const Dashboard = ({ history }) => {
+  const dispatch = useDispatch();
+  const userLogin = useSelector((state) => state.userLogin);
+  const { userInfo } = userLogin;
+
+  useEffect(() => {
+    if (!userInfo || !userInfo.name) {
+      history.push("/login");
+    }
+  }, [userInfo, history]);
+
+  const logoutHandler = () => {
+    history.push("/login");
+    dispatch(logout());
+  };
+
   return (
     <Box mt={5} display="flex" flexDirection="column">
-      <Typography
-        variant="h4"
-        color="secondary"
-        style={{ marginBottom: 20 }}
-      >{`Wecome to Auth App, USER NAME`}</Typography>
+      <Typography variant="h4" color="secondary" style={{ marginBottom: 20 }}>
+        {userInfo && `Wecome to Auth App, ${userInfo.name}`}
+      </Typography>
       <Typography style={{ marginBottom: 20 }}>
         {"Thanku for registering with us."}
       </Typography>
@@ -19,6 +34,7 @@ const Dashboard = () => {
             variant="contained"
             style={{ marginRight: 8 }}
             color="secondary"
+            onClick={logoutHandler}
           >
             {"Logout"}
           </Button>
