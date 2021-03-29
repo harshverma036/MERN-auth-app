@@ -45,3 +45,15 @@ export const registerUser = asyncHandler(async (req, res) => {
     token: generateToken(registeredUser._id),
   });
 });
+
+export const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.user._id);
+
+  if (user) {
+    const deletedUser = await user.delete();
+    res.status(200).json(deleteUser);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
